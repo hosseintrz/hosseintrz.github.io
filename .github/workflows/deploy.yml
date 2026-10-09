@@ -9,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: write
 
 concurrency:
   group: pages
@@ -35,6 +36,11 @@ jobs:
 
       - name: Build (includes OG images, resume PDF, pagefind)
         run: pnpm build
+
+      - name: Configure Pages (enables Pages with Actions source on first run)
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
