@@ -1,0 +1,10 @@
+# SAMPLE CONTENT — replace with a real paper entry (one YAML file per paper).
+title: "Reformer: The Efficient Transformer"
+authors: ["Kitaev, Kaiser, Levskaya"]
+year: 2020
+venue: "ICLR"
+url: "https://arxiv.org/abs/2001.04451"
+status: queue
+tags: ["efficiency", "transformers"]
+takeaway: "Sample note: LSH attention trades exactness for memory — queued to understand the practical accuracy cost. Replace with your own takeaway."
+draft: true

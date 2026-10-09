@@ -1,0 +1,10 @@
+# SAMPLE CONTENT — replace with a real paper entry (one YAML file per paper).
+title: "Attention Is All You Need"
+authors: ["Vaswani et al."]
+year: 2017
+venue: "NeurIPS"
+url: "https://arxiv.org/abs/1706.03762"
+status: read
+tags: ["transformers"]
+takeaway: "Sample note: attention as routing — every token queries every other token, and the architecture cost is quadratic by design. Replace with your own takeaway."
+draft: true

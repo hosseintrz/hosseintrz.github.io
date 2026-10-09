@@ -1,0 +1,108 @@
+# ============================================================
+# RESUME — single source of truth for /resume and /resume.pdf.
+#
+# REVIEW (Hossein): bullets below were drafted from what you told
+# me (teams, durations, tech). Edit wording freely — especially
+# the team highlights, which I inferred. Fields marked TODO are
+# yours to fill. Dates use the timeline you gave me.
+# ============================================================
+
+basics:
+  name: Hossein            # TODO: your full name
+  role: Software Engineer
+  tagline: Software engineer with 4 years of experience across cloud platforms, Go/TypeScript/Java services, and applied AI agents.
+  # email: you@domain.com   # TODO: uncomment and set
+  # location: Tehran, Iran  # TODO: uncomment and set
+  website: https://hosseintrz.github.io
+  github: https://github.com/hosseintrz
+  photo: /images/profile.jpg
+
+summary: >
+  Software engineer with 4 years of experience building and shipping cloud
+  platforms and business-critical systems. Worked across four product teams at
+  SystemGroup (Hamkaran System) — cloud ERP, AI & inventory, taxpayers & CRM —
+  with hands-on depth in Go, TypeScript, Angular, and Java, plus Docker and
+  CI/CD. Since early 2024 also building AI agents and agentic workflows,
+  solving AI-engineering problems like token management, model routing, and
+  agent evaluation. Currently back on the Sepidar Cloud team to relaunch the
+  product.
+
+# Reverse-chronological. Each company holds the teams you worked in;
+# `highlights` are the vital work items per team.
+experience:
+  - company: SystemGroup (Hamkaran System)
+    location: Iran
+    teams:
+      - name: Sepidar Cloud — Relaunch
+        period: Aug 2025 — Present
+        summary: >
+          Returned to the Sepidar Cloud team to relaunch the product: focus on
+          re-architecting the cloud offering and getting it production-ready
+          for a renewed launch.
+        highlights:
+          - Rejoined Sepidar Cloud to drive the relaunch — reworking the platform architecture and delivery pipeline for a renewed go-live.
+          - Building and hardening cloud services in Go, with CI/CD pipelines and Docker-based deployment as first-class concerns.
+          - Coordinating across former teams (AI/inventory, taxpayers/CRM) to carry lessons back into the cloud product.
+        stack: [Golang, Docker, CI/CD, Angular, PostgreSQL]
+
+      - name: Taxpayers & CRM
+        period: Feb 2025 — Aug 2025
+        summary: >
+          Built taxpayer-facing and CRM features inside the product suite,
+          including tax-compliance flows.
+        highlights:
+          - Developed features for the taxpayers and CRM domain, including tax-compliance and customer-management flows.  # REVIEW: adjust to your real scope
+          - Worked across Java/Go services and Angular frontends in a large legacy codebase.  # REVIEW
+          - Improved release reliability through automated CI checks.  # REVIEW
+        stack: [Java, Golang, Angular, TypeScript]
+
+      - name: AI & Inventory
+        period: Feb 2024 — Feb 2025
+        summary: >
+          Worked on inventory systems and the team's AI initiatives — the
+          first deep dive into AI engineering and agentic development.
+        highlights:
+          - Built AI agents and agentic workflows for product features, moving the team toward agentic software development.  # REVIEW
+          - "Solved AI-engineering challenges: token management, request/model routing, and agent evaluation harnesses."  # REVIEW
+          - Developed inventory features on top of the company platform, integrating AI capabilities with the existing stack.  # REVIEW
+        stack: [Golang, TypeScript, AI Agents, LLM Routing, Agent Evals]
+
+      - name: Sepidar Cloud
+        period: Feb 2023 — Feb 2024
+        summary: >
+          First year: core product work on Sepidar Cloud, the company's cloud
+          ERP/POS platform.
+        highlights:
+          - Shipped features across the Sepidar Cloud platform, working end to end from Angular UI to backend services.  # REVIEW
+          - Worked with Go, Java, and TypeScript across different services and teams.  # REVIEW
+          - Containerized workloads with Docker and helped automate build/deploy pipelines (CI/CD).  # REVIEW
+        stack: [Golang, Java, Angular, TypeScript, Docker, CI/CD]
+
+# TODO: add your education entries (school, degree, period).
+education: []
+
+skills:
+  - group: Languages
+    items: [Go (Golang), TypeScript, Java]
+  - group: Frontend
+    items: [Angular, HTML/CSS, REST integration]
+  - group: Backend & Data
+    items: [REST APIs, Microservices, SQL]
+  - group: AI Engineering
+    items: [AI Agents, Agentic Workflows, Token Management, Model/Request Routing, Agent Evaluation]
+  - group: DevOps
+    items: [Docker, CI/CD Pipelines, GitHub Actions]
+  - group: Ways of Working
+    items: [Agentic Development, Code Review, Cross-team Collaboration]
+
+projects: []
+
+certifications: []
+
+links:
+  - label: GitHub
+    url: https://github.com/hosseintrz
+  - label: Website
+    url: https://hosseintrz.github.io
+
+updated: 2026-10-09

@@ -1,0 +1,10 @@
+# SAMPLE CONTENT — replace with a real paper entry (one YAML file per paper).
+title: "Toolformer: Language Models Can Teach Themselves to Use Tools"
+authors: ["Schick et al."]
+year: 2023
+venue: "arXiv"
+url: "https://arxiv.org/abs/2302.04761"
+status: read
+tags: ["ai-agents", "tools"]
+takeaway: "Sample note: self-supervised API-call placement — the model learns where tools help, which is exactly the routing problem in agent design. Replace with your own takeaway."
+draft: true

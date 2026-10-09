@@ -1,0 +1,10 @@
+# SAMPLE CONTENT — replace with a real book entry (one YAML file per book).
+title: "The Pragmatic Programmer"
+author: "David Thomas & Andrew Hunt"
+status: read
+rating: 4
+dateFinished: 2026-02-11
+recommended: true
+tags: ["craft"]
+oneLiner: "Career-length engineering advice that survives every framework churn."
+draft: true

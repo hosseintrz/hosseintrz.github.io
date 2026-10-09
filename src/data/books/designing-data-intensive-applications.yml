@@ -1,0 +1,10 @@
+# SAMPLE CONTENT — replace with a real book entry (one YAML file per book).
+title: "Designing Data-Intensive Applications"
+author: "Martin Kleppmann"
+status: read
+rating: 5
+dateFinished: 2026-05-20
+recommended: true
+tags: ["architecture", "distributed-systems"]
+oneLiner: "The mental-model dictionary for building systems that move data honestly."
+draft: true
