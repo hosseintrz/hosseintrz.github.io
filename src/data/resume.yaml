@@ -8,7 +8,7 @@
 # ============================================================
 
 basics:
-  name: Hossein            # TODO: your full name
+  name: Hossein # TODO: your full name
   role: Software Engineer
   tagline: Software engineer with 4 years of experience across cloud platforms, Go/TypeScript/Java services, and applied AI agents.
   # email: you@domain.com   # TODO: uncomment and set
@@ -20,12 +20,11 @@ basics:
 summary: >
   Software engineer with 4 years of experience building and shipping cloud
   platforms and business-critical systems. Worked across four product teams at
-  SystemGroup (Hamkaran System) — cloud ERP, AI & inventory, taxpayers & CRM —
+  SystemGroup (Hamkaran System) — Cloud Sepidar, Aiand Inventory, Taxpayers & CRM —
   with hands-on depth in Go, TypeScript, Angular, and Java, plus Docker and
-  CI/CD. Since early 2024 also building AI agents and agentic workflows,
-  solving AI-engineering problems like token management, model routing, and
-  agent evaluation. Currently back on the Sepidar Cloud team to relaunch the
-  product.
+  CI/CD. Since early 2026 also building AI agents and agentic workflows,
+  working on AI Engineering problems like agentic inference and agent evaluation. 
+  Currently back on the Sepidar Cloud team to relaunch the product.
 
 # Reverse-chronological. Each company holds the teams you worked in;
 # `highlights` are the vital work items per team.
@@ -45,26 +44,26 @@ experience:
           - Coordinating across former teams (AI/inventory, taxpayers/CRM) to carry lessons back into the cloud product.
         stack: [Golang, Docker, CI/CD, Angular, PostgreSQL]
 
-      - name: Taxpayers & CRM
+      - name: Aiand Taxpayers & CRM
         period: Feb 2025 — Aug 2025
         summary: >
           Built taxpayer-facing and CRM features inside the product suite,
           including tax-compliance flows.
         highlights:
-          - Developed features for the taxpayers and CRM domain, including tax-compliance and customer-management flows.  # REVIEW: adjust to your real scope
-          - Worked across Java/Go services and Angular frontends in a large legacy codebase.  # REVIEW
-          - Improved release reliability through automated CI checks.  # REVIEW
+          - Developed features for the taxpayers and CRM domain, including tax-compliance and customer-management flows. # REVIEW: adjust to your real scope
+          - Worked across Java/Go services and Angular frontends in a large legacy codebase. # REVIEW
+          - Improved release reliability through automated CI checks. # REVIEW
         stack: [Java, Golang, Angular, TypeScript]
 
-      - name: AI & Inventory
+      - name: Aiand Inventory
         period: Feb 2024 — Feb 2025
         summary: >
           Worked on inventory systems and the team's AI initiatives — the
           first deep dive into AI engineering and agentic development.
         highlights:
-          - Built AI agents and agentic workflows for product features, moving the team toward agentic software development.  # REVIEW
-          - "Solved AI-engineering challenges: token management, request/model routing, and agent evaluation harnesses."  # REVIEW
-          - Developed inventory features on top of the company platform, integrating AI capabilities with the existing stack.  # REVIEW
+          - Built AI agents and agentic workflows for product features, moving the team toward agentic software development. # REVIEW
+          - "Solved AI-engineering challenges: token management, request/model routing, and agent evaluation harnesses." # REVIEW
+          - Developed inventory features on top of the company platform, integrating AI capabilities with the existing stack. # REVIEW
         stack: [Golang, TypeScript, AI Agents, LLM Routing, Agent Evals]
 
       - name: Sepidar Cloud
@@ -73,9 +72,9 @@ experience:
           First year: core product work on Sepidar Cloud, the company's cloud
           ERP/POS platform.
         highlights:
-          - Shipped features across the Sepidar Cloud platform, working end to end from Angular UI to backend services.  # REVIEW
-          - Worked with Go, Java, and TypeScript across different services and teams.  # REVIEW
-          - Containerized workloads with Docker and helped automate build/deploy pipelines (CI/CD).  # REVIEW
+          - Shipped features across the Sepidar Cloud platform, working end to end from Angular UI to backend services. # REVIEW
+          - Worked with Go, Java, and TypeScript across different services and teams. # REVIEW
+          - Containerized workloads with Docker and helped automate build/deploy pipelines (CI/CD). # REVIEW
         stack: [Golang, Java, Angular, TypeScript, Docker, CI/CD]
 
 # TODO: add your education entries (school, degree, period).
