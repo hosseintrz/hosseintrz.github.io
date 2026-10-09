@@ -1,10 +1,10 @@
 ---
 # SAMPLE CONTENT — replace this file with a real post.
 title: "Sample Post: Go Patterns I Keep Reusing"
-description: "A sample post demonstrating headings, tables, and lists. Replace me with a real post."
+description: "Sample post demonstrating the blog layout: headings, tables, and lists. Replace me with a real post."
 date: 2026-08-05
 tags: ["golang", "sample"]
-draft: true
+draft: false
 ---
 
 Sample content. Delete and replace — this one shows tables and lists.

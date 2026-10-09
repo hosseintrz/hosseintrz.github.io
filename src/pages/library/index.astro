@@ -1,0 +1,53 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import Card from '@/components/Card.astro';
+import Icon from '@/components/Icon.astro';
+import { getCollection } from 'astro:content';
+import { visibleDrafts } from '@/lib/group';
+
+const isDev = import.meta.env.DEV;
+const books = visibleDrafts(await getCollection('books'), isDev);
+const papers = visibleDrafts(await getCollection('papers'), isDev);
+---
+
+<BaseLayout title="Library" description="Books and papers I've read, with notes and recommendations.">
+  <Container size="wide" class="py-12 sm:py-16">
+    <header class="max-w-2xl" data-reveal>
+      <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">Library</h1>
+      <p class="mt-4 text-lg text-text-2">
+        What I read and what I took from it. Books and papers, each with my own
+        notes — no summaries without opinions.
+      </p>
+    </header>
+
+    <div class="mt-10 grid gap-4 sm:grid-cols-2" data-reveal>
+      <Card href="/library/books/">
+        <div class="flex items-start gap-4 p-6">
+          <span class="grid size-11 shrink-0 place-items-center rounded-lg text-accent" style={`background: var(--accent-soft)`}>
+            <Icon name="book" size={20} />
+          </span>
+          <div>
+            <h2 class="font-display text-lg font-semibold">Books</h2>
+            <p class="mt-1 text-sm text-text-2">
+              {books.length} tracked — read list, ratings, recommendations, and a currently-reading shelf.
+            </p>
+          </div>
+        </div>
+      </Card>
+      <Card href="/library/papers/">
+        <div class="flex items-start gap-4 p-6">
+          <span class="grid size-11 shrink-0 place-items-center rounded-lg text-accent" style={`background: var(--accent-soft)`}>
+            <Icon name="file-text" size={20} />
+          </span>
+          <div>
+            <h2 class="font-display text-lg font-semibold">Papers</h2>
+            <p class="mt-1 text-sm text-text-2">
+              {papers.length} tracked — sortable by year, status, and topic, each with my takeaway.
+            </p>
+          </div>
+        </div>
+      </Card>
+    </div>
+  </Container>
+</BaseLayout>

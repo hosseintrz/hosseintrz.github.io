@@ -1,0 +1,156 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import Badge from '@/components/Badge.astro';
+import DraftBadge from '@/components/DraftBadge.astro';
+import EmptyState from '@/components/EmptyState.astro';
+import Link from '@/components/Link.astro';
+import Icon from '@/components/Icon.astro';
+import ProgressRing from '@/components/ProgressRing.astro';
+import { getCollection } from 'astro:content';
+import { sortBooks } from '@/lib/sort';
+import { visibleDrafts } from '@/lib/group';
+import { formatMonthYear } from '@/lib/format';
+
+const isDev = import.meta.env.DEV;
+const books = visibleDrafts(sortBooks(await getCollection('books')), isDev);
+const reading = books.filter((b) => b.data.status === 'reading');
+const read = books.filter((b) => b.data.status === 'read');
+const recommended = read.filter((b) => b.data.recommended);
+---
+
+<BaseLayout title="Books" description="Books I've read, with ratings and recommendations.">
+  <Container size="wide" class="py-12 sm:py-16">
+    <header class="max-w-2xl" data-reveal>
+      <p class="font-mono text-sm uppercase tracking-wider text-text-3">
+        <Link href="/library">Library</Link> / Books
+      </p>
+      <h1 class="mt-2 text-4xl font-semibold tracking-tight sm:text-5xl">Books</h1>
+      <p class="mt-4 text-lg text-text-2">Read, rated, and occasionally recommended.</p>
+    </header>
+
+    <!-- view toggle -->
+    {
+      books.length > 0 && (
+        <div class="mt-8 flex items-center gap-2" data-books-view>
+          <button type="button" class="tag" data-view="shelf" aria-pressed="true">Shelf</button>
+          <button type="button" class="tag" data-view="list" aria-pressed="false">List</button>
+        </div>
+      )
+    }
+
+    <!-- currently reading -->
+    {
+      reading.length > 0 && (
+        <section class="mt-10" data-reveal aria-label="Currently reading">
+          <h2 class="font-mono text-sm uppercase tracking-wider text-text-3">Currently reading</h2>
+          <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {reading.map((b) => (
+              <li class="card p-5">
+                <div class="flex items-start gap-4">
+                  <div class="flex-1">
+                    <p class="font-display font-semibold leading-snug">{b.data.title}</p>
+                    <p class="text-sm text-text-3">{b.data.author}</p>
+                  </div>
+                  <ProgressRing progress={b.data.progress ?? 0} />
+                </div>
+                <p class="mt-2 text-sm text-text-2">{b.data.oneLiner}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <!-- read -->
+    <section class="mt-12" data-reveal aria-label="Read">
+      <h2 class="font-mono text-sm uppercase tracking-wider text-text-3">Read</h2>
+      {
+        read.length === 0 ? (
+          <div class="mt-4">
+            <EmptyState icon="book" title="Nothing logged yet" message="Finished books will land here." />
+          </div>
+        ) : (
+          <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-books-shelf>
+            {read.map((b) => (
+              <li class="card card-hover p-5">
+                <div class="flex items-start justify-between gap-2">
+                  <p class="font-display font-semibold leading-snug">{b.data.title}</p>
+                  {b.data.draft && <DraftBadge />}
+                </div>
+                <p class="text-sm text-text-3">{b.data.author}</p>
+                {b.data.rating && (
+                  <p class="mt-2 flex items-center gap-1 text-accent" aria-label={`Rated ${b.data.rating} out of 5`}>
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <Icon name="star" size={13} class={n <= b.data.rating! ? 'fill-current' : 'text-text-3 opacity-40'} />
+                    ))}
+                    <span class="ml-1 font-mono text-xs text-text-3">{b.data.rating}/5</span>
+                  </p>
+                )}
+                <p class="mt-2 text-sm text-text-2">{b.data.oneLiner}</p>
+                <div class="mt-3 flex flex-wrap items-center gap-2 text-xs text-text-3">
+                  {b.data.dateFinished && <span>{formatMonthYear(b.data.dateFinished)}</span>}
+                  {b.data.recommended && <Badge label="recommended" variant="accent" />}
+                </div>
+                {b.data.tags.length > 0 && (
+                  <p class="mt-2 font-mono text-xs text-text-3">{b.data.tags.join(' · ')}</p>
+                )}
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <!-- compact list view of the same data -->
+      {
+        read.length > 0 && (
+          <div class="mt-4 hidden" data-books-list>
+            <table class="w-full text-sm">
+              <thead>
+                <tr>
+                  <th class="border-b border-border-strong px-2 py-2 text-left font-mono text-xs uppercase tracking-wider text-text-3">Title</th>
+                  <th class="border-b border-border-strong px-2 py-2 text-left font-mono text-xs uppercase tracking-wider text-text-3">Author</th>
+                  <th class="border-b border-border-strong px-2 py-2 text-left font-mono text-xs uppercase tracking-wider text-text-3">Rating</th>
+                  <th class="border-b border-border-strong px-2 py-2 text-left font-mono text-xs uppercase tracking-wider text-text-3">Finished</th>
+                </tr>
+              </thead>
+              <tbody>
+                {read.map((b) => (
+                  <tr>
+                    <td class="border-b border-border px-2 py-2">{b.data.title}</td>
+                    <td class="border-b border-border px-2 py-2 text-text-2">{b.data.author}</td>
+                    <td class="border-b border-border px-2 py-2 text-accent">{b.data.rating ? `${b.data.rating}/5` : '—'}</td>
+                    <td class="border-b border-border px-2 py-2 text-text-3">{b.data.dateFinished ? formatMonthYear(b.data.dateFinished) : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )
+      }
+    </section>
+
+    <!-- recommended -->
+    {
+      recommended.length > 0 && (
+        <section class="mt-12" data-reveal aria-label="Recommended">
+          <h2 class="font-mono text-sm uppercase tracking-wider text-text-3">Recommended</h2>
+          <ul class="mt-4 space-y-3">
+            {recommended.map((b) => (
+              <li class="card p-4">
+                <p>
+                  <span class="font-display font-semibold">{b.data.title}</span>
+                  <span class="text-text-3"> — {b.data.author}</span>
+                </p>
+                <p class="mt-1 text-sm text-text-2">{b.data.oneLiner}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </Container>
+</BaseLayout>
+
+<script>
+  import '@/scripts/books-view';
+</script>

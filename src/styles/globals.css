@@ -329,6 +329,40 @@
     border-top: 1px solid var(--border);
   }
 
+  /* copy button injected into code blocks on post pages */
+  .code-copy {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--r-sm);
+    border: 1px solid var(--border);
+    background-color: var(--surface-2);
+    color: var(--text-2);
+    opacity: 0;
+    cursor: pointer;
+    transition:
+      opacity var(--dur-fast) var(--ease),
+      color var(--dur-fast) var(--ease),
+      border-color var(--dur-fast) var(--ease);
+  }
+  .prose pre:hover .code-copy,
+  .code-copy:focus-visible,
+  .code-copy.copied {
+    opacity: 1;
+  }
+  .code-copy:hover {
+    color: var(--text-1);
+    border-color: var(--border-strong);
+  }
+  .code-copy.copied {
+    color: var(--success);
+    border-color: color-mix(in oklab, var(--success) 30%, transparent);
+  }
+
   /* ---- entry animation (opt-in via data-reveal; JS-gated to avoid FOUC) ---- */
   html.js [data-reveal] {
     opacity: 0;
@@ -476,6 +510,13 @@
     font-size: 0.875rem;
     color: var(--text-2);
   }
+  /* Shiki dual themes: apply token-driven span colors per site theme. */
+  .prose .shiki span {
+    color: var(--shiki-light);
+  }
+  html[data-theme='dark'] .prose .shiki span {
+    color: var(--shiki-dark);
+  }
 }
 
 /* ---- film grain (dark mode only, whisper-quiet) ---- */
@@ -488,4 +529,29 @@ html[data-theme='dark'] body::after {
   opacity: var(--grain-opacity);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 240px 240px;
+}
+
+/* ---- print: paper gets plain black on white (the one intentional
+       exception to the token rule — screens are the product) ---- */
+@media print {
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .card {
+    border-color: #ddd;
+    box-shadow: none;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  html[data-theme='dark'] body::after {
+    display: none;
+  }
 }

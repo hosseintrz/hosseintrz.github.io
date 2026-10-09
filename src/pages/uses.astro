@@ -1,0 +1,45 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import Prose from '@/components/Prose.astro';
+
+// SAMPLE CONTENT — replace items with your real setup.
+---
+
+<BaseLayout title="Uses" description="Hardware, software, and setup I use day to day." noindex>
+  <Container class="py-12 sm:py-16">
+    <header class="max-w-2xl" data-reveal>
+      <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">Uses</h1>
+      <p class="mt-4 text-lg text-text-2">
+        Tools and setup I use day to day. <span class="badge badge-warn align-middle">SAMPLE</span>
+        — this list is sample content; replace it with your real gear.
+      </p>
+    </header>
+
+    <div class="mt-10">
+      <Prose>
+        <h2>Hardware</h2>
+        <ul>
+          <li>Laptop — the one I'm given at work; specs matter less than they used to.</li>
+          <li>A second monitor, vertical, for logs and terminal panes.</li>
+        </ul>
+        <h2>Editor &amp; terminal</h2>
+        <ul>
+          <li>VS Code with the Go and Angular tooling.</li>
+          <li>zsh with a minimal prompt; tmux when juggling services.</li>
+        </ul>
+        <h2>Day-to-day stack</h2>
+        <ul>
+          <li><strong>Go</strong> for services, <strong>TypeScript/Angular</strong> for frontends.</li>
+          <li>Docker for local environments and CI.</li>
+          <li>AI agents for scaffolding, reviews, and repetitive refactors — evaluated, not trusted.</li>
+        </ul>
+        <h2>Productivity</h2>
+        <ul>
+          <li>Plain markdown files for notes (synced, boring, mine).</li>
+          <li>A text file per week with three lines: did, learned, next.</li>
+        </ul>
+      </Prose>
+    </div>
+  </Container>
+</BaseLayout>

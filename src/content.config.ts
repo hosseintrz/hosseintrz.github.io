@@ -61,6 +61,8 @@ const books = defineCollection({
     recommended: z.boolean().default(false),
     tags: z.array(z.string()).default([]),
     oneLiner: z.string(),
+    /** 0-100 for status: 'reading' — drives the progress ring on /library */
+    progress: z.number().min(0).max(100).optional(),
     notesSlug: z.string().optional(),
     cover: z.string().optional(),
     draft: z.boolean().default(false),

@@ -1,0 +1,81 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import Prose from '@/components/Prose.astro';
+import Tag from '@/components/Tag.astro';
+import Badge from '@/components/Badge.astro';
+import Link from '@/components/Link.astro';
+import Icon from '@/components/Icon.astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '@/lib/format';
+import { visibleDrafts } from '@/lib/group';
+
+export async function getStaticPaths() {
+  const isDev = import.meta.env.DEV;
+  const projects = visibleDrafts(await getCollection('projects'), isDev);
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const variant = {
+  active: 'accent',
+  shipped: 'success',
+  archived: 'neutral',
+  idea: 'warn',
+} as const;
+
+const linkList = Object.entries(project.data.links);
+---
+
+<BaseLayout title={project.data.title} description={project.data.summary} noindex={project.data.draft}>
+  <Container class="py-12 sm:py-16">
+    <article class="mx-auto max-w-3xl">
+      <header transition:name={`project-${project.id}`} data-reveal>
+        <div class="flex flex-wrap items-center gap-3">
+          <Badge label={project.data.status} variant={variant[project.data.status]} />
+          {project.data.draft && <span class="badge badge-warn">DRAFT</span>}
+          <span class="text-sm text-text-3">
+            <time datetime={project.data.date.toISOString()}>{formatDate(project.data.date)}</time>
+          </span>
+        </div>
+        <h1 class="mt-3 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+          {project.data.title}
+        </h1>
+        <p class="mt-3 text-lg text-text-2">{project.data.summary}</p>
+        <div class="mt-4 flex flex-wrap gap-1.5">
+          {project.data.stack.map((s) => <Tag label={s} />)}
+        </div>
+        {
+          linkList.length > 0 && (
+            <div class="mt-5 flex flex-wrap gap-4 text-sm">
+              {linkList.map(([kind, url]) => (
+                <Link href={url} class="inline-flex items-center gap-1.5">
+                  <Icon name={kind === 'repo' ? 'github' : kind === 'demo' ? 'external' : 'file-text'} size={15} />
+                  {kind === 'repo' ? 'Source' : kind === 'demo' ? 'Demo' : 'Write-up'}
+                </Link>
+              ))}
+            </div>
+          )
+        }
+      </header>
+
+      <div class="mt-10">
+        <Prose>
+          <Content />
+        </Prose>
+      </div>
+
+      <p class="mt-12 text-sm no-print">
+        <Link href="/projects" class="inline-flex items-center gap-1">
+          ← All projects
+        </Link>
+      </p>
+    </article>
+  </Container>
+</BaseLayout>

@@ -1,0 +1,25 @@
+<div
+  class="fixed inset-x-0 top-0 z-50 h-0.5 origin-left bg-accent no-print"
+  style="transform: scaleX(0)"
+  data-reading-progress
+  aria-hidden="true"
+></div>
+
+<script>
+  function updateProgress() {
+    const bar = document.querySelector<HTMLElement>('[data-reading-progress]');
+    if (!bar) return;
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - window.innerHeight;
+    const pct = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    bar.style.transform = `scaleX(${pct})`;
+  }
+
+  document.addEventListener(
+    'scroll',
+    () => requestAnimationFrame(updateProgress),
+    { passive: true }
+  );
+  window.addEventListener('resize', updateProgress);
+  document.addEventListener('astro:page-load', updateProgress);
+</script>

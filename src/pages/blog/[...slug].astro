@@ -1,0 +1,146 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import Prose from '@/components/Prose.astro';
+import Tag from '@/components/Tag.astro';
+import Toc from '@/components/Toc.astro';
+import ReadingProgress from '@/components/ReadingProgress.astro';
+import DraftBadge from '@/components/DraftBadge.astro';
+import Link from '@/components/Link.astro';
+import Icon from '@/components/Icon.astro';
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { sortPostsDesc } from '@/lib/sort';
+import { visibleDrafts } from '@/lib/group';
+import { formatDate, readingLabel } from '@/lib/format';
+import { readingTime } from '@/lib/reading-time';
+
+export async function getStaticPaths() {
+  const isDev = import.meta.env.DEV;
+  const posts = visibleDrafts(await getCollection('blog'), isDev);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const rt = readingTime(post.body ?? '');
+
+const isDev = import.meta.env.DEV;
+const sorted = visibleDrafts(sortPostsDesc(await getCollection('blog')), isDev);
+const idx = sorted.findIndex((p) => p.id === post.id);
+const newer = idx > 0 ? sorted[idx - 1] : undefined;
+const older = idx >= 0 && idx < sorted.length - 1 ? sorted[idx + 1] : undefined;
+
+const related = sorted
+  .filter((p) => p.id !== post.id && p.data.tags.some((t) => post.data.tags.includes(t)))
+  .sort(
+    (a, b) =>
+      b.data.tags.filter((t) => post.data.tags.includes(t)).length -
+      a.data.tags.filter((t) => post.data.tags.includes(t)).length
+  )
+  .slice(0, 3);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} noindex={post.data.draft}>
+  <ReadingProgress />
+  <Container class="py-12 sm:py-16">
+    <article class="mx-auto max-w-3xl">
+      <header data-reveal>
+        <div class="flex flex-wrap items-center gap-3 text-sm text-text-3">
+          <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+          <span aria-hidden="true">·</span>
+          <span class="inline-flex items-center gap-1.5">
+            <Icon name="clock" size={14} /> {readingLabel(rt.minutes)}
+          </span>
+          {post.data.draft && <DraftBadge />}
+        </div>
+        <h1 class="mt-3 text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+          {post.data.title}
+        </h1>
+        <p class="mt-3 text-lg text-text-2">{post.data.description}</p>
+        {
+          post.data.tags.length > 0 && (
+            <div class="mt-4 flex flex-wrap gap-1.5">
+              {post.data.tags.map((t) => (
+                <Tag label={t} href={`/blog/tags/${t}/`} />
+              ))}
+            </div>
+          )
+        }
+        {post.data.canonicalUrl && (
+          <p class="mt-3 text-sm text-text-3">
+            Also published on <Link href={post.data.canonicalUrl}>{post.data.canonicalUrl}</Link>
+          </p>
+        )}
+      </header>
+
+      <div class="mt-10 grid gap-10 xl:grid-cols-[minmax(0,1fr)_210px]">
+        <Prose>
+          <Content />
+        </Prose>
+        <aside class="hidden xl:block">
+          <div class="sticky top-20">
+            <Toc headings={headings} />
+          </div>
+        </aside>
+      </div>
+
+      <div class="xl:hidden mt-10">
+        <Toc headings={headings} />
+      </div>
+
+      {
+        (newer || older) && (
+          <nav class="mx-auto mt-14 grid max-w-3xl gap-3 sm:grid-cols-2 no-print" aria-label="Post navigation">
+            {[
+              newer && { label: 'Newer post', post: newer, align: 'left' },
+              older && { label: 'Older post', post: older, align: 'right' },
+            ]
+              .filter(Boolean)
+              .map((nav) => {
+                const item = nav!;
+                return (
+                  <a
+                    href={`/blog/${item.post.id}/`}
+                    class:list={['card card-hover p-4 no-underline', item.align === 'right' && 'text-right']}
+                  >
+                    <span class="font-mono text-xs uppercase tracking-wider text-text-3">
+                      {item.label}
+                    </span>
+                    <span class="mt-1 block font-display font-medium text-text-1">
+                      {item.post.data.title}
+                    </span>
+                  </a>
+                );
+              })}
+          </nav>
+        )
+      }
+
+      {
+        related.length > 0 && (
+          <section class="mx-auto mt-12 max-w-3xl no-print" aria-label="Related posts">
+            <h2 class="font-mono text-sm uppercase tracking-wider text-text-3">Related</h2>
+            <ul class="mt-4 space-y-2">
+              {related.map((p) => (
+                <li>
+                  <Link href={`/blog/${p.id}/`} muted class="text-text-2 hover:text-text-1">
+                    {p.data.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+    </article>
+  </Container>
+</BaseLayout>
+
+<script>
+  import '@/scripts/copy-code';
+</script>

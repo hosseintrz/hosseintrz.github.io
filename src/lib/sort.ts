@@ -1,11 +1,11 @@
-/** Pure sorting helpers for content collections. */
+/** Pure sorting helpers. Operate on Astro collection entry shape ({ data: {...} }). */
 
-export function byDateDesc<T extends { date: Date }>(a: T, b: T): number {
-  return b.date.getTime() - a.date.getTime();
+export function byDateDesc<T extends { data: { date: Date } }>(a: T, b: T): number {
+  return b.data.date.getTime() - a.data.date.getTime();
 }
 
 /** Posts, newest first. */
-export function sortPostsDesc<T extends { date: Date }>(items: T[]): T[] {
+export function sortPostsDesc<T extends { data: { date: Date } }>(items: T[]): T[] {
   return [...items].sort(byDateDesc);
 }
 
@@ -13,10 +13,12 @@ export function sortPostsDesc<T extends { date: Date }>(items: T[]): T[] {
  * Projects: explicit `order` wins (ascending); ordered items come before
  * unordered; unordered fall back to date, newest first.
  */
-export function sortProjects<T extends { date: Date; order?: number }>(items: T[]): T[] {
+export function sortProjects<T extends { data: { date: Date; order?: number } }>(
+  items: T[]
+): T[] {
   return [...items].sort((a, b) => {
-    const ao = a.order ?? null;
-    const bo = b.order ?? null;
+    const ao = a.data.order ?? null;
+    const bo = b.data.order ?? null;
     if (ao !== null && bo !== null && ao !== bo) return ao - bo;
     if (ao !== null && bo === null) return -1;
     if (bo !== null && ao === null) return 1;
@@ -25,17 +27,23 @@ export function sortProjects<T extends { date: Date; order?: number }>(items: T[
 }
 
 /** Papers, newest year first; ties broken by title. */
-export function sortPapersByYearDesc<T extends { year: number; title: string }>(items: T[]): T[] {
-  return [...items].sort((a, b) => b.year - a.year || a.title.localeCompare(b.title));
+export function sortPapersByYearDesc<T extends { data: { year: number; title: string } }>(
+  items: T[]
+): T[] {
+  return [...items].sort(
+    (a, b) => b.data.year - a.data.year || a.data.title.localeCompare(b.data.title)
+  );
 }
 
-/** Books: finished books by finish date (newest first), then reading, then want-to-read. */
-export function sortBooks<T extends { status: string; dateFinished?: Date }>(items: T[]): T[] {
+/** Books: reading first, then read by finish date (newest first), then want-to-read. */
+export function sortBooks<T extends { data: { status: string; dateFinished?: Date } }>(
+  items: T[]
+): T[] {
   const rank: Record<string, number> = { reading: 0, read: 1, want: 2 };
   return [...items].sort((a, b) => {
-    if (rank[a.status] !== rank[b.status]) return rank[a.status] - rank[b.status];
-    const ad = a.dateFinished?.getTime() ?? 0;
-    const bd = b.dateFinished?.getTime() ?? 0;
+    if (rank[a.data.status] !== rank[b.data.status]) return rank[a.data.status] - rank[b.data.status];
+    const ad = a.data.dateFinished?.getTime() ?? 0;
+    const bd = b.data.dateFinished?.getTime() ?? 0;
     return bd - ad;
   });
 }

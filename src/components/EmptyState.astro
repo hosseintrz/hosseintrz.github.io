@@ -1,0 +1,22 @@
+---
+import Icon from '@/components/Icon.astro';
+
+interface Props {
+  title: string;
+  message: string;
+  icon?: 'book' | 'file-text' | 'layers' | 'star' | 'search' | 'clock';
+}
+
+const { title, message, icon = 'file-text' } = Astro.props;
+---
+
+<div
+  class="card flex flex-col items-center gap-3 px-6 py-12 text-center"
+  style={`background: var(--surface-1)`}
+>
+  <span class="grid size-12 place-items-center rounded-full text-text-3" style={`background: var(--surface-2)`}>
+    <Icon name={icon} size={22} />
+  </span>
+  <p class="font-display text-lg font-semibold">{title}</p>
+  <p class="max-w-sm text-sm text-text-3">{message}</p>
+</div>

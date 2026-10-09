@@ -1,0 +1,156 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import Button from '@/components/Button.astro';
+import Link from '@/components/Link.astro';
+import Icon from '@/components/Icon.astro';
+import { site } from '@/config/site';
+import { getCollection } from 'astro:content';
+import { formatDate } from '@/lib/format';
+
+const resumeEntry = (await getCollection('resume')).at(0);
+const resume = resumeEntry?.data;
+---
+
+<BaseLayout title="Resume" description={`Resume of ${site.name} — ${site.role}.`}>
+  <Container class="py-12 sm:py-16">
+    {
+      resume && (
+        <div class="mx-auto max-w-3xl">
+          <header class="flex flex-col items-start gap-6 sm:flex-row sm:items-center" data-reveal>
+            {resume.basics.photo && (
+              <img
+                src={resume.basics.photo}
+                alt={`Portrait of ${resume.basics.name}`}
+                width="96"
+                height="96"
+                class="size-24 rounded-2xl border border-border object-cover"
+              />
+            )}
+            <div class="flex-1">
+              <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">{resume.basics.name}</h1>
+              <p class="mt-1 text-lg text-accent">{resume.basics.role}</p>
+              <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-text-2">
+                {resume.basics.email && (
+                  <span class="inline-flex items-center gap-1.5">
+                    <Icon name="mail" size={14} /> {resume.basics.email}
+                  </span>
+                )}
+                {resume.basics.location && <span>{resume.basics.location}</span>}
+                {resume.basics.github && (
+                  <Link href={resume.basics.github} class="inline-flex items-center gap-1.5">
+                    <Icon name="github" size={14} /> GitHub
+                  </Link>
+                )}
+                {resume.basics.website && (
+                  <Link href={resume.basics.website} class="inline-flex items-center gap-1.5">
+                    <Icon name="external" size={14} /> Website
+                  </Link>
+                )}
+              </div>
+            </div>
+            <div class="flex gap-2 no-print">
+              <Button href={site.resumePdf} download>
+                <Icon name="download" size={15} /> PDF
+              </Button>
+            </div>
+          </header>
+
+          <section class="mt-10" data-reveal aria-label="Summary">
+            <p class="text-lg text-text-2">{resume.summary}</p>
+          </section>
+
+          <section class="mt-12" data-reveal aria-label="Experience">
+            <h2 class="font-mono text-sm uppercase tracking-wider text-text-3">Experience</h2>
+            <div class="mt-6 space-y-10">
+              {resume.experience.map((company) => (
+                <div>
+                  <h3 class="font-display text-xl font-semibold">{company.company}</h3>
+                  {company.location && <p class="text-sm text-text-3">{company.location}</p>}
+                  <div class="mt-4 space-y-6">
+                    {company.teams.map((team) => (
+                      <div class="card p-5">
+                        <div class="flex flex-wrap items-baseline justify-between gap-2">
+                          <h4 class="font-display font-semibold">{team.name}</h4>
+                          <p class="font-mono text-xs text-text-3">{team.period}</p>
+                        </div>
+                        {team.summary && <p class="mt-2 text-sm text-text-2">{team.summary}</p>}
+                        {team.highlights.length > 0 && (
+                          <ul class="mt-3 space-y-1.5 text-sm text-text-1">
+                            {team.highlights.map((h) => (
+                              <li class="flex gap-2">
+                                <span class="mt-1 size-1 shrink-0 rounded-full" style={`background: var(--accent)`} />
+                                <span>{h}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        {team.stack.length > 0 && (
+                          <p class="mt-3 font-mono text-xs text-text-3">{team.stack.join(' · ')}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {resume.skills.length > 0 && (
+            <section class="mt-12" data-reveal aria-label="Skills">
+              <h2 class="font-mono text-sm uppercase tracking-wider text-text-3">Skills</h2>
+              <div class="mt-5 grid gap-4 sm:grid-cols-2">
+                {resume.skills.map((group) => (
+                  <div class="card p-4">
+                    <h3 class="text-sm font-semibold">{group.group}</h3>
+                    <p class="mt-1.5 text-sm text-text-2">{group.items.join(' · ')}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {resume.education.length > 0 && (
+            <section class="mt-12" data-reveal aria-label="Education">
+              <h2 class="font-mono text-sm uppercase tracking-wider text-text-3">Education</h2>
+              <div class="mt-5 space-y-4">
+                {resume.education.map((edu) => (
+                  <div class="flex flex-wrap items-baseline justify-between gap-2">
+                    <div>
+                      <h3 class="font-display font-semibold">{edu.degree}</h3>
+                      <p class="text-sm text-text-2">{edu.school}</p>
+                      {edu.details && <p class="text-sm text-text-3">{edu.details}</p>}
+                    </div>
+                    <p class="font-mono text-xs text-text-3">{edu.period}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {resume.certifications.length > 0 && (
+            <section class="mt-12" data-reveal aria-label="Certifications">
+              <h2 class="font-mono text-sm uppercase tracking-wider text-text-3">Certifications</h2>
+              <ul class="mt-5 space-y-2 text-sm text-text-2">
+                {resume.certifications.map((cert) => (
+                  <li class="flex gap-2">
+                    <span class="mt-1.5 size-1 shrink-0 rounded-full" style={`background: var(--accent)`} />
+                    <span>{cert}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+
+          <footer class="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-6 text-sm text-text-3">
+            <p>
+              Last updated {resume.updated ? formatDate(resume.updated) : '—'} ·
+              <Link href="/">hosseintrz.github.io</Link>
+            </p>
+            <p class="no-print">Print-friendly — or grab the PDF.</p>
+          </footer>
+        </div>
+      )
+    }
+  </Container>
+</BaseLayout>

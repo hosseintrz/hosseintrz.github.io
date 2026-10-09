@@ -1,0 +1,28 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import Tag from '@/components/Tag.astro';
+import { getCollection } from 'astro:content';
+import { uniqueTags, visibleDrafts } from '@/lib/group';
+
+const isDev = import.meta.env.DEV;
+const posts = visibleDrafts(await getCollection('blog'), isDev);
+const tags = uniqueTags(posts);
+---
+
+<BaseLayout title="Tags" description="All blog tags." noindex>
+  <Container class="py-12 sm:py-16">
+    <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">Tags</h1>
+    {
+      tags.length > 0 ? (
+        <div class="mt-8 flex flex-wrap gap-2">
+          {tags.map(({ tag, count }) => (
+            <Tag label={`${tag} (${count})`} href={`/blog/tags/${tag}/`} />
+          ))}
+        </div>
+      ) : (
+        <p class="mt-6 text-text-2">No tags yet.</p>
+      )
+    }
+  </Container>
+</BaseLayout>

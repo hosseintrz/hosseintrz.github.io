@@ -8,4 +8,12 @@ export default defineConfig({
   // User/organization Pages site is served from the domain root, so no `base` is needed.
   trailingSlash: 'ignore',
   integrations: [sitemap()],
+  markdown: {
+    shikiConfig: {
+      // Dual themes: tokens are emitted as CSS vars; globals.css maps them
+      // to [data-theme] so code blocks follow the site theme.
+      themes: { light: 'one-light', dark: 'one-dark-pro' },
+      defaultColor: false,
+    },
+  },
 });

@@ -1,0 +1,39 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import Prose from '@/components/Prose.astro';
+import EmptyState from '@/components/EmptyState.astro';
+import { getCollection, render } from 'astro:content';
+import { formatDate } from '@/lib/format';
+
+const entry = (await getCollection('now')).at(0);
+let body = null;
+let updated;
+if (entry) {
+  ({ Content: body } = await render(entry));
+  updated = entry.data.updated;
+}
+---
+
+<BaseLayout title="Now" description="What I'm working on, learning, and reading right now.">
+  <Container class="py-12 sm:py-16">
+    <header class="max-w-2xl" data-reveal>
+      <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">Now</h1>
+      <p class="mt-4 text-lg text-text-2">
+        What I'm doing, learning, and reading right now.
+        {updated && (
+          <span class="text-text-3">Last updated <time datetime={updated.toISOString()}>{formatDate(updated)}</time>.</span>
+        )}
+      </p>
+    </header>
+    <div class="mt-10" data-reveal>
+      {body ? (
+        <Prose>
+          <body />
+        </Prose>
+      ) : (
+        <EmptyState icon="clock" title="Nothing here yet" message="The now page is coming soon." />
+      )}
+    </div>
+  </Container>
+</BaseLayout>

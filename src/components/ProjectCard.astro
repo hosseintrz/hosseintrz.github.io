@@ -1,0 +1,44 @@
+---
+import Card from '@/components/Card.astro';
+import Tag from '@/components/Tag.astro';
+import Badge from '@/components/Badge.astro';
+import DraftBadge from '@/components/DraftBadge.astro';
+import Icon from '@/components/Icon.astro';
+import type { CollectionEntry } from 'astro:content';
+import { formatDate } from '@/lib/format';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const variant = {
+  active: 'accent',
+  shipped: 'success',
+  archived: 'neutral',
+  idea: 'warn',
+} as const;
+---
+
+<Card
+  href={`/projects/${project.id}/`}
+  transition:name={`project-${project.id}`}
+>
+  <article class="flex h-full flex-col p-5">
+    <div class="flex items-center justify-between gap-2">
+      <Badge label={project.data.status} variant={variant[project.data.status]} />
+      {project.data.draft && <DraftBadge />}
+    </div>
+    <h3 class="mt-3 font-display text-lg font-semibold leading-snug tracking-tight">
+      {project.data.title}
+    </h3>
+    <p class="mt-1.5 line-clamp-3 flex-1 text-sm text-text-2">{project.data.summary}</p>
+    <div class="mt-4 flex flex-wrap items-center gap-1.5">
+      {project.data.stack.map((s) => <Tag label={s} />)}
+    </div>
+    <p class="mt-3 flex items-center gap-1.5 text-xs text-text-3">
+      <Icon name="calendar" size={13} />
+      <time datetime={project.data.date.toISOString()}>{formatDate(project.data.date)}</time>
+    </p>
+  </article>
+</Card>

@@ -1,0 +1,42 @@
+---
+interface Props {
+  progress: number;
+  size?: number;
+}
+
+const { progress, size = 48 } = Astro.props;
+const r = (size - 6) / 2;
+const c = 2 * Math.PI * r;
+const dash = Math.max(0, Math.min(100, progress)) / 100 * c;
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox={`0 0 ${size} ${size}`}
+  class="shrink-0"
+  role="img"
+  aria-label={`${progress}% read`}
+>
+  <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--surface-2)" stroke-width="4" />
+  <circle
+    cx={size / 2}
+    cy={size / 2}
+    r={r}
+    fill="none"
+    stroke="var(--accent)"
+    stroke-width="4"
+    stroke-linecap="round"
+    stroke-dasharray={`${dash} ${c - dash}`}
+    transform={`rotate(-90 ${size / 2} ${size / 2})`}
+  />
+  <text
+    x="50%"
+    y="50%"
+    dominant-baseline="central"
+    text-anchor="middle"
+    font-size={size * 0.22}
+    fill="var(--text-2)"
+    font-family="var(--font-mono)">{progress}</text
+  >
+</svg>

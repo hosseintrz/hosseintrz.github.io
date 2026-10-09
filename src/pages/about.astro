@@ -1,0 +1,100 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import Section from '@/components/Section.astro';
+import Prose from '@/components/Prose.astro';
+import Tag from '@/components/Tag.astro';
+import { site } from '@/config/site';
+import { getCollection } from 'astro:content';
+
+const resumeEntry = (await getCollection('resume')).at(0);
+const experience = resumeEntry?.data.experience ?? [];
+const teams = experience[0]?.teams ?? [];
+---
+
+<BaseLayout
+  title="About"
+  description={`Career story and values of ${site.name} — ${site.role}.`}
+>
+  <Container class="py-12 sm:py-16">
+    <header class="max-w-2xl" data-reveal>
+      <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">About</h1>
+      <p class="mt-4 text-lg text-text-2">
+        I'm {site.name} — a {site.role.toLowerCase()} who likes boring,
+        dependable systems and new, slightly dangerous ideas (applied to
+        software, of course).
+      </p>
+    </header>
+
+    <div class="mt-10 grid gap-10 md:grid-cols-[auto_minmax(0,1fr)]" data-reveal>
+      <img
+        src={site.photo}
+        alt={`Portrait of ${site.name}`}
+        width="160"
+        height="160"
+        class="size-40 rounded-2xl border border-border object-cover shadow-sm"
+      />
+      <Prose>
+        <h2>The short version</h2>
+        <p>
+          Software engineer with 4 years of experience, currently at
+          <strong>SystemGroup (Hamkaran System)</strong>. I've worked with Go,
+          TypeScript, Angular, and Java; with Docker and CI/CD; and — since
+          2024 — with AI agents and agentic ways of building software.
+        </p>
+        <h2>The career so far</h2>
+        <p>
+          I joined SystemGroup in February 2023 and have deliberately moved
+          between teams to see the whole system:
+        </p>
+        <ul>
+          <li>
+            <strong>Sepidar Cloud</strong> (2023–2024) — cloud ERP platform
+            work, end to end.
+          </li>
+          <li>
+            <strong>AI &amp; Inventory</strong> (2024–2025) — inventory systems
+            plus the team's first serious AI agent work: token management,
+            routing, agent evaluation.
+          </li>
+          <li>
+            <strong>Taxpayers &amp; CRM</strong> (2025) — compliance-heavy
+            features in a large codebase.
+          </li>
+          <li>
+            <strong>Sepidar Cloud, again</strong> (Aug 2025 → now) — back to
+            relaunch the cloud product properly.
+          </li>
+        </ul>
+        <h2>What I value</h2>
+        <ul>
+          <li>Ship small, measure, then decide. Teams that celebrate deletion are healthy.</li>
+          <li>Boring infrastructure, adventurous product work.</li>
+          <li>Agents as colleagues: evaluate them like engineers, not oracles.</li>
+        </ul>
+      </Prose>
+    </div>
+
+    <Section title="Timeline" class="!pt-12">
+      <ol class="relative space-y-8 border-l border-border pl-6">
+        {
+          teams.map((team) => (
+            <li class="relative">
+              <span class="absolute -left-[1.9rem] top-1.5 size-2.5 rounded-full border border-border bg-surface-2" />
+              <p class="font-mono text-xs text-text-3">{team.period}</p>
+              <p class="font-display font-semibold">{team.name}</p>
+              {team.summary && <p class="mt-1 text-sm text-text-2">{team.summary}</p>}
+              {team.stack.length > 0 && (
+                <div class="mt-2 flex flex-wrap gap-1.5">
+                  {team.stack.map((s) => (
+                    <Tag label={s} />
+                  ))}
+                </div>
+              )}
+            </li>
+          ))
+        }
+      </ol>
+    </Section>
+  </Container>
+</BaseLayout>

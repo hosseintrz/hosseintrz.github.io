@@ -8,7 +8,7 @@ stack: ["typescript", "angular"]
 links:
   repo: https://github.com/hosseintrz
 featured: true
-draft: true
+draft: false
 ---
 
 Sample content so the projects grid renders. Delete and replace.

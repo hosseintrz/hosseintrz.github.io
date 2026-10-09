@@ -1,0 +1,91 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import EmptyState from '@/components/EmptyState.astro';
+import { getCollection } from 'astro:content';
+import { sortProjects } from '@/lib/sort';
+import { visibleDrafts } from '@/lib/group';
+
+const isDev = import.meta.env.DEV;
+const projects = visibleDrafts(sortProjects(await getCollection('projects')), isDev);
+const statuses = [...new Set(projects.map((p) => p.data.status))];
+const stacks = [...new Set(projects.flatMap((p) => p.data.stack))].sort();
+---
+
+<BaseLayout title="Projects" description="Things I've built — case studies with the why, the how, and the outcome.">
+  <Container size="wide" class="py-12 sm:py-16">
+    <header class="max-w-2xl" data-reveal>
+      <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">Projects</h1>
+      <p class="mt-4 text-lg text-text-2">
+        Case studies: the problem, the approach, and what actually happened.
+      </p>
+    </header>
+
+    {
+      projects.length > 0 && (
+        <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3" data-reveal>
+          <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Filter by status">
+            <span class="font-mono text-xs uppercase tracking-wider text-text-3">Status</span>
+            {statuses.map((s) => (
+              <button
+                type="button"
+                class="tag"
+                data-filter-kind="status"
+                data-filter-value={s}
+                aria-pressed="false"
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+          {stacks.length > 0 && (
+            <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Filter by stack">
+              <span class="font-mono text-xs uppercase tracking-wider text-text-3">Stack</span>
+              {stacks.map((s) => (
+                <button
+                  type="button"
+                  class="tag"
+                  data-filter-kind="stack"
+                  data-filter-value={s}
+                  aria-pressed="false"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+          <button type="button" class="tag hidden" data-filter-clear>Reset</button>
+        </div>
+      )
+    }
+
+    {
+      projects.length > 0 ? (
+        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-filter-container>
+          {projects.map((p) => (
+            <div
+              data-filter-item
+              data-status={p.data.status}
+              data-stack={p.data.stack.join(',')}
+            >
+              <ProjectCard project={p} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div class="mt-10">
+          <EmptyState
+            icon="layers"
+            title="No projects yet"
+            message="Case studies are being written. Check back soon."
+          />
+        </div>
+      )
+    }
+  </Container>
+</BaseLayout>
+
+<script>
+  import '@/scripts/filters';
+</script>

@@ -7,4 +7,4 @@ dateFinished: 2026-05-20
 recommended: true
 tags: ["architecture", "distributed-systems"]
 oneLiner: "The mental-model dictionary for building systems that move data honestly."
-draft: true
+draft: false

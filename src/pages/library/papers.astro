@@ -1,0 +1,94 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import DraftBadge from '@/components/DraftBadge.astro';
+import EmptyState from '@/components/EmptyState.astro';
+import Link from '@/components/Link.astro';
+import { getCollection } from 'astro:content';
+import { sortPapersByYearDesc } from '@/lib/sort';
+import { visibleDrafts } from '@/lib/group';
+
+const isDev = import.meta.env.DEV;
+const papers = visibleDrafts(sortPapersByYearDesc(await getCollection('papers')), isDev);
+---
+
+<BaseLayout title="Papers" description="Papers I've read, with my takeaways.">
+  <Container size="wide" class="py-12 sm:py-16">
+    <header class="max-w-2xl" data-reveal>
+      <p class="font-mono text-sm uppercase tracking-wider text-text-3">
+        <Link href="/library">Library</Link> / Papers
+      </p>
+      <h1 class="mt-2 text-4xl font-semibold tracking-tight sm:text-5xl">Papers</h1>
+      <p class="mt-4 text-lg text-text-2">Each with my own takeaway — sorted by year, filterable by status.</p>
+    </header>
+
+    {
+      papers.length > 0 && (
+        <div class="mt-8 flex flex-wrap items-center gap-2" data-papers-filter>
+          <span class="font-mono text-xs uppercase tracking-wider text-text-3">Status</span>
+          {['all', 'read', 'reading', 'queue'].map((s) => (
+            <button type="button" class="tag" data-paper-status={s} aria-pressed={s === 'all' ? 'true' : 'false'}>
+              {s}
+            </button>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      papers.length === 0 ? (
+        <div class="mt-10">
+          <EmptyState icon="file-text" title="No papers yet" message="Reading list is being curated." />
+        </div>
+      ) : (
+        <ul class="mt-10 space-y-4" data-papers-list>
+          {papers.map((p) => (
+            <li class="card p-5" data-paper-row data-year={p.data.year} data-status={p.data.status} data-tags={p.data.tags.join(',')}>
+              <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <a href={p.data.url} target="_blank" rel="noopener noreferrer" class="link font-display font-semibold">
+                  {p.data.title}
+                </a>
+                <span class="font-mono text-xs text-text-3">
+                  {p.data.year}
+                  {p.data.venue && ` · ${p.data.venue}`}
+                </span>
+                {p.data.draft && <DraftBadge />}
+                <span class="badge badge-neutral ml-auto">{p.data.status}</span>
+              </div>
+              <p class="mt-1 text-sm text-text-3">{p.data.authors.join(', ')}</p>
+              <p class="mt-2 text-sm text-text-2">{p.data.takeaway}</p>
+              {p.data.tags.length > 0 && (
+                <p class="mt-3 font-mono text-xs text-text-3">{p.data.tags.join(' · ')}</p>
+              )}
+              {p.data.notesSlug && (
+                <p class="mt-2 text-sm">
+                  <Link href={`/blog/${p.data.notesSlug}/`}>My notes →</Link>
+                </p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </Container>
+</BaseLayout>
+
+<script>
+  function setupPapersFilter(): void {
+    const root = document.querySelector('[data-papers-filter]');
+    if (!root) return;
+    root.addEventListener('click', (e) => {
+      const btn = e.target instanceof Element ? e.target.closest<HTMLButtonElement>('[data-paper-status]') : null;
+      if (!btn) return;
+      const status = btn.dataset.paperStatus ?? 'all';
+      root.querySelectorAll<HTMLButtonElement>('[data-paper-status]').forEach((b) => {
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      document.querySelectorAll<HTMLElement>('[data-paper-row]').forEach((row) => {
+        row.classList.toggle('hidden', status !== 'all' && row.dataset.status !== status);
+      });
+    });
+  }
+  setupPapersFilter();
+  document.addEventListener('astro:page-load', setupPapersFilter);
+</script>
