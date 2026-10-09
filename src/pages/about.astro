@@ -10,11 +10,21 @@ import { getCollection } from 'astro:content';
 const resumeEntry = (await getCollection('resume')).at(0);
 const experience = resumeEntry?.data.experience ?? [];
 const teams = experience[0]?.teams ?? [];
+
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: site.url,
+  jobTitle: site.role,
+  sameAs: [site.github],
+};
 ---
 
 <BaseLayout
   title="About"
   description={`Career story and values of ${site.name} — ${site.role}.`}
+  ld={personLd}
 >
   <Container class="py-12 sm:py-16">
     <header class="max-w-2xl" data-reveal>

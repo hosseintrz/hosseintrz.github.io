@@ -1,0 +1,53 @@
+---
+/**
+ * Soft cursor-following ambient glow. Opt-in per placement (home hero).
+ * Disabled on touch devices and under prefers-reduced-motion.
+ */
+---
+
+<div class="glow" data-glow aria-hidden="true"></div>
+
+<style>
+  :global(.glow) {
+    position: absolute;
+    inset: -25% -10%;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      340px circle at var(--gx, 50%) var(--gy, 40%),
+      var(--accent-soft),
+      transparent 70%
+    );
+    transition: opacity var(--dur-slow) var(--ease);
+  }
+  :global(.glow.on) {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  function setupGlow(): void {
+    const glow = document.querySelector<HTMLElement>('[data-glow]');
+    if (!glow) return;
+    const host = glow.parentElement;
+    if (!host) return;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const coarse = window.matchMedia('(pointer: coarse)').matches;
+    if (reduced || coarse) return;
+
+    const onMove = (e: PointerEvent) => {
+      const rect = host.getBoundingClientRect();
+      glow.style.setProperty('--gx', `${e.clientX - rect.left}px`);
+      glow.style.setProperty('--gy', `${e.clientY - rect.top}px`);
+    };
+    host.addEventListener('pointermove', onMove, { passive: true });
+    host.addEventListener('pointerenter', onMove, { passive: true });
+    host.addEventListener('pointerleave', () => glow.classList.remove('on'));
+    host.addEventListener('pointerenter', () => glow.classList.add('on'));
+  }
+
+  setupGlow();
+  document.addEventListener('astro:page-load', setupGlow);
+</script>

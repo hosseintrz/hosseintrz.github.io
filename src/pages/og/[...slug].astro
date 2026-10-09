@@ -1,0 +1,164 @@
+---
+/**
+ * Hidden OG-image card pages (1200x630), screenshotted to PNG in postbuild.
+ * Routes: /og/default/, /og/blog/<slug>/, /og/projects/<slug>/
+ * Not linked anywhere; excluded from the sitemap.
+ */
+import '../../styles/tokens.css';
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/inter';
+import { getCollection } from 'astro:content';
+import { visibleDrafts } from '@/lib/group';
+import { site } from '@/config/site';
+
+export async function getStaticPaths() {
+  const isDev = import.meta.env.DEV;
+  const posts = visibleDrafts(await getCollection('blog'), isDev);
+  const projects = visibleDrafts(await getCollection('projects'), isDev);
+
+  return [
+    {
+      params: { slug: 'default' },
+      props: {
+        kind: 'default' as const,
+        title: site.tagline,
+        subtitle: `${site.name} — ${site.role}`,
+        meta: site.url.replace(/^https?:\/\//, ''),
+      },
+    },
+    ...posts.map((p) => ({
+      params: { slug: `blog/${p.id}` },
+      props: {
+        kind: 'post' as const,
+        title: p.data.title,
+        subtitle: p.data.description,
+        meta: p.data.tags.join(' · '),
+      },
+    })),
+    ...projects.map((p) => ({
+      params: { slug: `projects/${p.id}` },
+      props: {
+        kind: 'project' as const,
+        title: p.data.title,
+        subtitle: p.data.summary,
+        meta: p.data.stack.join(' · '),
+      },
+    })),
+  ];
+}
+
+interface Props {
+  kind: 'default' | 'post' | 'project';
+  title: string;
+  subtitle: string;
+  meta: string;
+}
+
+const { kind, title, subtitle, meta } = Astro.props;
+const label = kind === 'default' ? `${site.name} — ${site.role}` : `${site.name} · ${kind}`;
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark" data-accent="violet">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>OG card</title>
+  </head>
+  <body>
+    <main class="card-frame">
+      <div class="card-inner">
+        <p class="label">{label}</p>
+        <h1 class="title">{title}</h1>
+        <p class="subtitle">{subtitle}</p>
+        <div class="footer">
+          <span class="accent-bar"></span>
+          <span class="meta">{meta}</span>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  html {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    margin: 0;
+    background-color: var(--surface-0);
+    color: var(--text-1);
+  }
+  .card-frame {
+    width: 1200px;
+    height: 630px;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(900px circle at 85% -10%, var(--accent-soft), transparent 55%),
+      var(--surface-0);
+    box-sizing: border-box;
+    padding: 60px;
+  }
+  .card-inner {
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background-color: var(--surface-1);
+    padding: 64px 72px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    font-family: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  }
+  .label {
+    margin: 0;
+    font-family: 'Space Grotesk Variable', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text-2);
+  }
+  .title {
+    margin: 18px 0 0;
+    font-family: 'Space Grotesk Variable', sans-serif;
+    font-size: 64px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    color: var(--text-1);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .subtitle {
+    margin: 20px 0 0;
+    font-size: 26px;
+    line-height: 1.45;
+    color: var(--text-2);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .accent-bar {
+    width: 64px;
+    height: 8px;
+    border-radius: 999px;
+    background-color: var(--accent);
+  }
+  .meta {
+    font-family: 'JetBrains Mono Variable', monospace;
+    font-size: 20px;
+    color: var(--text-3);
+  }
+</style>

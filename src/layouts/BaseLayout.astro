@@ -6,17 +6,21 @@ import '../styles/globals.css';
 import { ClientRouter } from 'astro:transitions';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
+import CommandPalette from '@/components/CommandPalette.astro';
+import Analytics from '@/components/Analytics.astro';
 import { site } from '@/config/site';
 
 interface Props {
   title?: string;
   description?: string;
-  /** Open Graph image path (site-root absolute, e.g. /og/my-post.png) */
+  /** Open Graph image path (site-root absolute, e.g. /og/blog/my-post.png) */
   image?: string;
   noindex?: boolean;
+  /** JSON-LD structured data object(s) */
+  ld?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
-const { title, description = site.description, image = site.ogImage, noindex = false } =
+const { title, description = site.description, image = site.ogImage, noindex = false, ld } =
   Astro.props;
 const pageTitle = title ? `${title} · ${site.name}` : `${site.name} — ${site.role}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -47,6 +51,12 @@ const ogImage = new URL(image, Astro.site);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
+    {
+      ld && (
+        <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+      )
+    }
+
     <script is:inline>
       (function () {
         try {
@@ -71,6 +81,8 @@ const ogImage = new URL(image, Astro.site);
       <slot />
     </main>
     <Footer />
+    <CommandPalette />
+    <Analytics />
     <script>
       import '@/scripts/ui';
     </script>

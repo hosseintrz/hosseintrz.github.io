@@ -31,11 +31,17 @@ const variant = {
 } as const;
 
 const linkList = Object.entries(project.data.links);
+const ogImage = project.data.cover ?? `/og/projects/${project.id}.png`;
 ---
 
-<BaseLayout title={project.data.title} description={project.data.summary} noindex={project.data.draft}>
+<BaseLayout
+  title={project.data.title}
+  description={project.data.summary}
+  image={ogImage}
+  noindex={project.data.draft}
+>
   <Container class="py-12 sm:py-16">
-    <article class="mx-auto max-w-3xl">
+    <article class="mx-auto max-w-3xl" data-pagefind-body>
       <header transition:name={`project-${project.id}`} data-reveal>
         <div class="flex flex-wrap items-center gap-3">
           <Badge label={project.data.status} variant={variant[project.data.status]} />

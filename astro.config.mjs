@@ -7,7 +7,12 @@ export default defineConfig({
   site: 'https://hosseintrz.github.io',
   // User/organization Pages site is served from the domain root, so no `base` is needed.
   trailingSlash: 'ignore',
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      // keep internal tooling out of the sitemap
+      filter: (page) => !/\/(og\/|design|uses|404)/.test(page),
+    }),
+  ],
   markdown: {
     shikiConfig: {
       // Dual themes: tokens are emitted as CSS vars; globals.css maps them

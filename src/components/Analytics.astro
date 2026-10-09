@@ -1,0 +1,15 @@
+---
+/**
+ * Optional GoatCounter analytics. Disabled by default; enable in
+ * src/config/site.ts (features.analytics).
+ */
+import { site } from '@/config/site';
+
+const { enabled, code, script } = site.features.analytics;
+---
+
+{
+  enabled && code && (
+    <script is:inline data-goatcounter={`https://${code}.goatcounter.com/count`} async src={script} />
+  )
+}

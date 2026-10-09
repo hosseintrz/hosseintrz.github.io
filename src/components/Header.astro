@@ -33,6 +33,15 @@ const isActive = (href: string): { 'aria-current'?: 'page' } | Record<string, ne
       </nav>
 
       <div class="flex items-center gap-1">
+        <button
+          type="button"
+          class="icon-btn"
+          data-cmdk-open
+          aria-label="Search (Ctrl+K)"
+          title="Search (Ctrl+K)"
+        >
+          <Icon name="search" size={18} />
+        </button>
         <AccentPicker />
         <ThemeToggle />
         <details class="relative md:hidden">

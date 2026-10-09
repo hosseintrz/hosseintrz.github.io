@@ -4,6 +4,7 @@ import Container from '@/components/Container.astro';
 import Section from '@/components/Section.astro';
 import Button from '@/components/Button.astro';
 import Link from '@/components/Link.astro';
+import AmbientGlow from '@/components/AmbientGlow.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 import PostCard from '@/components/PostCard.astro';
 import EmptyState from '@/components/EmptyState.astro';
@@ -26,12 +27,22 @@ const reading = visibleDrafts(
   (await getCollection('books')).filter((b) => b.data.status === 'reading'),
   isDev
 );
+
+const personLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: site.url,
+  jobTitle: site.role,
+  sameAs: [site.github],
+};
 ---
 
-<BaseLayout description={site.description}>
+<BaseLayout description={site.description} ld={personLd}>
   <Container size="wide" class="py-10 sm:py-14">
     <!-- hero -->
     <section class="relative" data-reveal>
+      <AmbientGlow />
       <div class="flex flex-col items-start gap-8 sm:flex-row sm:items-center">
         <img
           src={site.photo}

@@ -14,6 +14,8 @@ import { sortPostsDesc } from '@/lib/sort';
 import { visibleDrafts } from '@/lib/group';
 import { formatDate, readingLabel } from '@/lib/format';
 import { readingTime } from '@/lib/reading-time';
+import Comments from '@/components/Comments.astro';
+import { site } from '@/config/site';
 
 export async function getStaticPaths() {
   const isDev = import.meta.env.DEV;
@@ -43,12 +45,31 @@ const related = sorted
       a.data.tags.filter((t) => post.data.tags.includes(t)).length
   )
   .slice(0, 3);
+
+const ogImage = post.data.cover ?? `/og/blog/${post.id}.png`;
+const blogPostingLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.date.toISOString(),
+  ...(post.data.updated ? { dateModified: post.data.updated.toISOString() } : {}),
+  author: { '@type': 'Person', name: site.name, url: site.url },
+  mainEntityOfPage: new URL(`/blog/${post.id}/`, Astro.site).toString(),
+  image: new URL(ogImage, Astro.site).toString(),
+};
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description} noindex={post.data.draft}>
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  image={ogImage}
+  noindex={post.data.draft}
+  ld={blogPostingLd}
+>
   <ReadingProgress />
   <Container class="py-12 sm:py-16">
-    <article class="mx-auto max-w-3xl">
+    <article class="mx-auto max-w-3xl" data-pagefind-body>
       <header data-reveal>
         <div class="flex flex-wrap items-center gap-3 text-sm text-text-3">
           <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
@@ -92,6 +113,8 @@ const related = sorted
       <div class="xl:hidden mt-10">
         <Toc headings={headings} />
       </div>
+
+      <Comments />
 
       {
         (newer || older) && (
