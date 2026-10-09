@@ -19,7 +19,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "check": "pnpm lint && pnpm typecheck && pnpm build && pnpm test && pnpm contrast",
-    "contrast": "node scripts/check-contrast.mjs"
+    "contrast": "node scripts/check-contrast.mjs",
+    "prepare": "lefthook install"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.0",

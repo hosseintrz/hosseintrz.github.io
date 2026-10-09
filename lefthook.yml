@@ -1,0 +1,19 @@
+# lefthook — pre-commit quality gate
+# Install: runs automatically via `prepare` script on pnpm install.
+
+pre-commit:
+  parallel: true
+  commands:
+    format:
+      glob: "*.{js,jsx,ts,tsx,mjs,cjs,astro,md,mdx,yaml,yml,json,css}"
+      run: pnpm exec prettier --write --no-error-on-unmatched-pattern {staged_files}
+      stage_fixed: true
+    lint:
+      run: pnpm lint
+    typecheck:
+      run: pnpm typecheck
+
+commit-msg:
+  commands:
+    conventional:
+      run: node scripts/check-commit-msg.mjs {1}
