@@ -1,18 +1,20 @@
-/** Client-side grid filtering (projects). Toggle chips, AND across groups. */
+/**
+ * Client-side grid filtering (projects). Toggle chips; AND across groups.
+ * Document-level delegation so it survives view-transition DOM swaps.
+ */
 
-function applyFilters(container: HTMLElement): void {
-  const kinds = new Set(
-    [...container.querySelectorAll('[data-filter-kind]')].map((b) =>
-      (b as HTMLElement).dataset.filterKind
-    )
-  );
-  const active: Record<string, Set<string>> = {};
-  for (const kind of kinds) active[kind as string] = new Set();
-  container
+let bound = false;
+
+function applyFilters(): void {
+  const container = document.querySelector<HTMLElement>('[data-filter-container]');
+  if (!container) return;
+
+  const active: Record<string, Set<string>> = { status: new Set(), stack: new Set() };
+  document
     .querySelectorAll<HTMLButtonElement>('[data-filter-kind][aria-pressed="true"]')
     .forEach((b) => active[b.dataset.filterKind as string].add(b.dataset.filterValue as string));
 
-  const clearBtn = container.querySelector('[data-filter-clear]');
+  const clearBtn = document.querySelector('[data-filter-clear]');
   const anyActive = Object.values(active).some((s) => s.size > 0);
   clearBtn?.classList.toggle('hidden', !anyActive);
 
@@ -21,7 +23,7 @@ function applyFilters(container: HTMLElement): void {
     let pass = true;
     for (const [kind, set] of Object.entries(active)) {
       if (set.size === 0) continue;
-      const values = (item.dataset[kind === 'status' ? 'status' : 'stack'] ?? '').split(',');
+      const values = (item.dataset[kind] ?? '').split(',');
       if (kind === 'stack') {
         // stack: card must contain at least one active stack value
         if (![...set].some((v) => values.includes(v))) pass = false;
@@ -38,19 +40,17 @@ function applyFilters(container: HTMLElement): void {
 }
 
 function setupFilters(): void {
-  const container = document.querySelector<HTMLElement>('[data-filter-container]');
-  if (!container) return;
-
-  container.addEventListener('click', (e) => {
+  if (bound) return;
+  bound = true;
+  document.addEventListener('click', (e) => {
     const target = e.target instanceof Element ? e.target : null;
     if (!target) return;
 
-    const clear = target.closest('[data-filter-clear]');
-    if (clear) {
-      container
+    if (target.closest('[data-filter-clear]')) {
+      document
         .querySelectorAll<HTMLButtonElement>('[data-filter-kind][aria-pressed="true"]')
         .forEach((b) => b.setAttribute('aria-pressed', 'false'));
-      applyFilters(container);
+      applyFilters();
       return;
     }
 
@@ -58,10 +58,9 @@ function setupFilters(): void {
     if (btn) {
       const pressed = btn.getAttribute('aria-pressed') === 'true';
       btn.setAttribute('aria-pressed', String(!pressed));
-      applyFilters(container);
+      applyFilters();
     }
   });
 }
 
 setupFilters();
-document.addEventListener('astro:page-load', setupFilters);

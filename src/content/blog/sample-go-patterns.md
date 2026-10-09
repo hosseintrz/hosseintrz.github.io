@@ -22,6 +22,6 @@ the implementation at the edge.
 
 ## Checklist before merging
 
-- [ ] Errors wrapped with context
-- [ ] Context propagated, never stored
-- [ ] Table-driven tests for the tricky branches
+- Errors wrapped with context
+- Context propagated, never stored
+- Table-driven tests for the tricky branches
