@@ -1,0 +1,79 @@
+---
+import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/globals.css';
+import { ClientRouter } from 'astro:transitions';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { site } from '@/config/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Open Graph image path (site-root absolute, e.g. /og/my-post.png) */
+  image?: string;
+  noindex?: boolean;
+}
+
+const { title, description = site.description, image = site.ogImage, noindex = false } =
+  Astro.props;
+const pageTitle = title ? `${title} · ${site.name}` : `${site.name} — ${site.role}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark" data-accent="violet">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script is:inline>
+      (function () {
+        try {
+          const d = document.documentElement;
+          let pref = localStorage.getItem('theme') || 'dark';
+          if (pref === 'system') {
+            pref = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+          }
+          d.dataset.theme = pref;
+          d.dataset.accent = localStorage.getItem('accent') || 'violet';
+        } catch {
+          document.documentElement.dataset.theme = 'dark';
+        }
+        document.documentElement.classList.add('js');
+      })();
+    </script>
+  </head>
+  <body class="flex min-h-dvh flex-col">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import '@/scripts/ui';
+    </script>
+    <ClientRouter />
+  </body>
+</html>

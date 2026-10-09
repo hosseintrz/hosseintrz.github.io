@@ -1,0 +1,242 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Container from '@/components/Container.astro';
+import Button from '@/components/Button.astro';
+import Tag from '@/components/Tag.astro';
+import Badge from '@/components/Badge.astro';
+import Card from '@/components/Card.astro';
+import Link from '@/components/Link.astro';
+import Icon from '@/components/Icon.astro';
+import Prose from '@/components/Prose.astro';
+import type { IconName } from '@/lib/icons';
+
+const swatches: Array<[string, string]> = [
+  ['surface-0', 'Page background'],
+  ['surface-1', 'Card background'],
+  ['surface-2', 'Raised / code background'],
+  ['text-1', 'Primary text'],
+  ['text-2', 'Secondary text'],
+  ['text-3', 'Muted text'],
+  ['border', 'Border'],
+  ['border-strong', 'Border strong'],
+  ['accent', 'Accent'],
+  ['accent-contrast', 'On accent'],
+  ['success', 'Success'],
+  ['warn', 'Warning'],
+  ['danger', 'Danger'],
+];
+
+const accents = ['violet', 'cyan', 'lime', 'amber', 'rose', 'mono'] as const;
+
+const iconNames: IconName[] = [
+  'sun',
+  'moon',
+  'monitor',
+  'sliders',
+  'search',
+  'github',
+  'external',
+  'arrow-right',
+  'arrow-up-right',
+  'check',
+  'star',
+  'book',
+  'file-text',
+  'download',
+  'copy',
+  'menu',
+  'x',
+  'rss',
+  'calendar',
+  'clock',
+  'mail',
+  'terminal',
+  'layers',
+];
+---
+
+<BaseLayout title="Design" description="Living style guide for this site — tokens, themes, and components." noindex>
+  <Container size="wide" class="py-12 sm:py-16">
+    <header class="max-w-2xl">
+      <h1 class="text-4xl font-semibold tracking-tight sm:text-5xl">Design system</h1>
+      <p class="mt-4 text-lg text-text-2">
+        Every color, radius, shadow, and duration on this site is a token in
+        <code class="font-mono text-[0.85em] text-accent">src/styles/tokens.css</code>. Toggle the
+        theme and accent from the header to preview every combination — this page is the test bench.
+      </p>
+    </header>
+
+    <section class="mt-14" data-reveal>
+      <h2 class="text-2xl font-semibold tracking-tight">Color tokens</h2>
+      <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        {
+          swatches.map(([token, label]) => (
+            <div class="card p-4" style={`background: var(--surface-1)`}>
+              <div
+                class="h-14 w-full rounded-md border border-border"
+                style={`background: var(--${token})`}
+              />
+              <p class="mt-3 font-mono text-xs text-accent">--{token}</p>
+              <p class="text-xs text-text-3">{label}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="mt-14" data-reveal>
+      <h2 class="text-2xl font-semibold tracking-tight">Accent presets</h2>
+      <p class="mt-2 text-text-2">
+        Six accents, each verified AA in both modes. Change from the header picker.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        {
+          accents.map((a) => (
+            <div class="card flex items-center gap-3 px-4 py-3" style={`background: var(--surface-1)`}>
+              <span class="size-6 rounded-full border border-black/20" style={`background: var(--swatch-${a})`} />
+              <span class="font-mono text-sm">{a}</span>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="mt-14" data-reveal>
+      <h2 class="text-2xl font-semibold tracking-tight">Typography</h2>
+      <div class="card mt-6 space-y-4 p-6" style={`background: var(--surface-1)`}>
+        <p class="font-display text-4xl font-semibold tracking-tight">Space Grotesk — display</p>
+        <p class="text-xl text-text-2">Inter Variable — body text at 20px</p>
+        <p class="font-mono text-sm text-text-3">JetBrains Mono — code &amp; metadata</p>
+        <p class="text-sm text-text-3">Small print in muted text-3.</p>
+      </div>
+    </section>
+
+    <section class="mt-14" data-reveal>
+      <h2 class="text-2xl font-semibold tracking-tight">Buttons</h2>
+      <div class="card mt-6 flex flex-wrap items-center gap-4 p-6" style={`background: var(--surface-1)`}>
+        <Button href="#buttons">Primary</Button>
+        <Button href="#buttons" variant="ghost">Ghost</Button>
+        <Button href="#buttons" size="sm">Small</Button>
+        <Button href="#buttons" variant="primary">
+          With icon <Icon name="arrow-right" size={16} />
+        </Button>
+        <button type="button" class="icon-btn" aria-label="Example icon button">
+          <Icon name="star" size={18} />
+        </button>
+      </div>
+    </section>
+
+    <section class="mt-14" data-reveal>
+      <h2 class="text-2xl font-semibold tracking-tight">Tags, badges, links</h2>
+      <div class="card mt-6 space-y-4 p-6" style={`background: var(--surface-1)`}>
+        <div class="flex flex-wrap gap-2">
+          <Tag label="golang" />
+          <Tag label="typescript" />
+          <Tag label="ai-agents" href="#tags" />
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <Badge label="shipped" variant="success" />
+          <Badge label="active" variant="accent" />
+          <Badge label="draft" variant="warn" />
+          <Badge label="archived" variant="neutral" />
+          <Badge label="breaking" variant="danger" />
+        </div>
+        <p class="text-text-2">
+          Internal <Link href="/about">sweep link</Link>, external
+          <Link href="https://astro.build">Astro docs</Link>, muted
+          <Link href="#links" muted>muted link</Link>.
+        </p>
+      </div>
+    </section>
+
+    <section class="mt-14" data-reveal>
+      <h2 class="text-2xl font-semibold tracking-tight">Cards</h2>
+      <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Card href="#cards">
+          <div class="p-5">
+            <h3 class="font-display text-lg font-semibold">Link card</h3>
+            <p class="mt-1 text-sm text-text-2">Hover me — lift, border glow, shadow.</p>
+          </div>
+        </Card>
+        <Card>
+          <div class="p-5">
+            <h3 class="font-display text-lg font-semibold">Static card</h3>
+            <p class="mt-1 text-sm text-text-2">No hover behavior, used for grouping.</p>
+          </div>
+        </Card>
+        <Card href="#cards">
+          <div class="p-5">
+            <div class="flex items-center gap-2 text-accent">
+              <Icon name="layers" size={18} />
+              <span class="font-mono text-xs uppercase tracking-wide">category</span>
+            </div>
+            <h3 class="mt-2 font-display text-lg font-semibold">With meta</h3>
+            <p class="mt-1 text-sm text-text-2">Cards compose with icons, tags, badges.</p>
+          </div>
+        </Card>
+      </div>
+    </section>
+
+    <section class="mt-14" data-reveal>
+      <h2 class="text-2xl font-semibold tracking-tight">Icons</h2>
+      <div class="card mt-6 grid grid-cols-4 gap-2 p-6 sm:grid-cols-8" style={`background: var(--surface-1)`}>
+        {
+          iconNames.map((name) => (
+            <span class="grid place-items-center rounded-md p-3 text-text-2 hover:bg-surface-2 hover:text-accent">
+              <Icon name={name} size={20} />
+            </span>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="mt-14" data-reveal>
+      <h2 class="text-2xl font-semibold tracking-tight">Prose</h2>
+      <div class="card mt-6 p-6 sm:p-8" style={`background: var(--surface-1)`}>
+        <Prose>
+          <h2>Rendered markdown</h2>
+          <p>
+            Body text set in Inter with a 1.75 line height. <strong>Bold text</strong>, <em>emphasis</em>,
+            inline <code>code()</code>, and a footnote.<sup>1</sup>
+          </p>
+          <ul>
+            <li>Unordered list item</li>
+            <li>Another item</li>
+          </ul>
+          <blockquote>
+            <p>Blockquote with an accent edge.</p>
+          </blockquote>
+          <pre><code class="language-go" set:text={'func main() {\n    fmt.Println("hello, tokens")\n}'} /></pre>
+          <table>
+            <thead>
+              <tr><th>Column</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Measure</td><td>65ch</td></tr>
+              <tr><td>Line height</td><td>1.75</td></tr>
+            </tbody>
+          </table>
+          <hr />
+          <section class="footnotes">
+            <ol>
+              <li id="fn-1">Footnote content lives at the bottom. <a href="#fnref-1">↩</a></li>
+            </ol>
+          </section>
+        </Prose>
+      </div>
+    </section>
+
+    <section class="mt-14" data-reveal>
+      <h2 class="text-2xl font-semibold tracking-tight">Motion</h2>
+      <div class="card mt-6 p-6" style={`background: var(--surface-1)`}>
+        <ul class="space-y-2 text-sm text-text-2">
+          <li><span class="font-mono text-accent">--dur-fast</span> 150ms — hovers, focus rings</li>
+          <li><span class="font-mono text-accent">--dur-base</span> 250ms — cards, popovers, transitions</li>
+          <li><span class="font-mono text-accent">--dur-slow</span> 400ms — entry reveals</li>
+          <li>One shared easing curve: <span class="font-mono text-accent">--ease</span></li>
+          <li>All motion collapses to zero under <span class="font-mono">prefers-reduced-motion</span>.</li>
+        </ul>
+      </div>
+    </section>
+  </Container>
+</BaseLayout>

@@ -1,0 +1,27 @@
+---
+import Icon from '@/components/Icon.astro';
+import { site } from '@/config/site';
+
+interface Props {
+  href: string;
+  class?: string;
+  muted?: boolean;
+}
+
+const { href, class: className, muted = false } = Astro.props;
+const isExternal = /^https?:\/\//.test(href) && !href.startsWith(site.url);
+const isAnchor = href.startsWith('#') || href.startsWith('mailto:');
+---
+
+<a
+  href={href}
+  class:list={['link', muted && 'text-text-2 no-underline hover:text-text-1', className]}
+  {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+>
+  <slot />
+  {
+    isExternal && !isAnchor && (
+      <Icon name="arrow-up-right" size={12} class="mb-0.5 inline-block align-baseline" />
+    )
+  }
+</a>

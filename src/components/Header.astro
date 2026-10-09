@@ -1,0 +1,58 @@
+---
+import Container from '@/components/Container.astro';
+import ThemeToggle from '@/components/ThemeToggle.astro';
+import AccentPicker from '@/components/AccentPicker.astro';
+import Icon from '@/components/Icon.astro';
+import { site } from '@/config/site';
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string): { 'aria-current'?: 'page' } | Record<string, never> =>
+  currentPath === href ? { 'aria-current': 'page' as const } : {};
+---
+
+<header class="sticky top-0 z-40 border-b border-border bg-surface-0/85 backdrop-blur-md">
+  <Container size="full">
+    <div class="flex h-14 items-center justify-between gap-3">
+      <a
+        href="/"
+        class="font-display text-[15px] font-semibold tracking-tight text-text-1 no-underline hover:text-accent"
+      >
+        {site.name}
+        <span class="text-text-3" aria-hidden="true">/</span>
+        <span class="font-normal text-text-3">{site.role}</span>
+      </a>
+
+      <nav class="hidden items-center gap-5 md:flex" aria-label="Main">
+        {
+          site.nav.map((item) => (
+            <a href={item.href} class="nav-link" {...isActive(item.href)}>
+              {item.label}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div class="flex items-center gap-1">
+        <AccentPicker />
+        <ThemeToggle />
+        <details class="relative md:hidden">
+          <summary
+            class="icon-btn list-none [&::-webkit-details-marker]:hidden"
+            aria-label="Open menu"
+          >
+            <Icon name="menu" size={18} />
+          </summary>
+          <nav class="popover" aria-label="Mobile">
+            {
+              site.nav.map((item) => (
+                <a href={item.href} class="popover-item" {...isActive(item.href)}>
+                  {item.label}
+                </a>
+              ))
+            }
+          </nav>
+        </details>
+      </div>
+    </div>
+  </Container>
+</header>

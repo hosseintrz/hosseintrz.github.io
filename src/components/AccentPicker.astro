@@ -1,0 +1,30 @@
+---
+import Icon from '@/components/Icon.astro';
+import { ACCENTS } from '@/lib/accents';
+---
+
+<details class="relative" data-accent-picker>
+  <summary
+    class="icon-btn list-none [&::-webkit-details-marker]:hidden"
+    aria-label="Change accent color"
+    title="Accent color"
+  >
+    <Icon name="sliders" size={18} />
+  </summary>
+  <div class="popover" role="menu" aria-label="Accent color">
+    {
+      ACCENTS.map((a) => (
+        <button type="button" role="menuitemradio" class="popover-item" data-accent-option={a.id}>
+          <span
+            class="size-3.5 rounded-full border border-black/20"
+            style={`background: var(--swatch-${a.id})`}
+          />
+          <span class="flex-1">{a.label}</span>
+          <span class="hidden" data-accent-check>
+            <Icon name="check" size={14} />
+          </span>
+        </button>
+      ))
+    }
+  </div>
+</details>

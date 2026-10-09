@@ -1,0 +1,22 @@
+---
+import { svgFor } from '@/lib/icons';
+
+// Markup-only: the client script in BaseLayout swaps icons and syncs state.
+// data-theme-icon is replaced with the icon matching the active preference.
+---
+
+<button
+  type="button"
+  class="icon-btn"
+  data-theme-toggle
+  aria-label="Change theme"
+  title="Theme: cycles dark / light / system"
+>
+  <span class="grid place-items-center" data-theme-icon set:html={svgFor('moon')}></span>
+</button>
+
+<style>
+  span[data-theme-icon] :global(svg) {
+    display: block;
+  }
+</style>

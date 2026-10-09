@@ -1,0 +1,26 @@
+---
+import Container from '@/components/Container.astro';
+import Icon from '@/components/Icon.astro';
+import { site } from '@/config/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-border">
+  <Container size="full">
+    <div
+      class="flex flex-col items-center justify-between gap-4 py-10 text-sm text-text-3 sm:flex-row"
+    >
+      <p>&copy; {year} {site.name}. Built with Astro.</p>
+      <div class="flex items-center gap-5">
+        <a href={site.github} target="_blank" rel="noopener noreferrer" class="hover:text-text-1" aria-label="GitHub">
+          <Icon name="github" size={18} />
+        </a>
+        <a href="/rss.xml" class="hover:text-text-1" aria-label="RSS feed">
+          <Icon name="rss" size={18} />
+        </a>
+        <a href="/design" class="hover:text-text-1">Design</a>
+      </div>
+    </div>
+  </Container>
+</footer>
